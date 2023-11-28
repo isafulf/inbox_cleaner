@@ -4,7 +4,7 @@ This script helps manage a Gmail inbox by filtering out promotional emails using
 
 ## Prerequisites
 
-- Python 3.6 or higher
+- Python 3.7 or higher
 - Gmail account
 - Google Cloud account with Gmail API enabled
 - OpenAI API key
