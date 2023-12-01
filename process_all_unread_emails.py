@@ -144,7 +144,8 @@ def evaluate_email(email_data: Dict[str, Union[str, List[str]]], user_first_name
             "\"True\" or \"False\""
         )
     }
-    truncated_body = email_data['body'][:MAX_EMAIL_LEN] + ("..." if len(email_data['body']) > MAX_EMAIL_LEN else "")
+    truncated_body = (email_data['body'][:MAX_EMAIL_LEN] + ("..." if len(email_data['body']) > MAX_EMAIL_LEN else "")) if 'body' in email_data else ""
+
     user_message: Dict[str, str] = {
         "role": "user",
         "content": (
@@ -172,12 +173,15 @@ def evaluate_email(email_data: Dict[str, Union[str, List[str]]], user_first_name
     # Extract and return the response
     return completion.choices[0].message.content.strip() == "True"
 
-
-
-
 def process_email(gmail: Resource, message_info: Dict[str, Union[str, List[str]]], email_data_parsed: Dict[str, Union[str, List[str]]], user_first_name: str, user_last_name: str, client: OpenAI) -> int:
+    try:
+        should_mark_as_read = evaluate_email(email_data_parsed, user_first_name, user_last_name, client)
+    except Exception as e:
+        print(f"Failed to evaluate email: {e}")
+        return 0
+    
     # Evaluate email
-    if evaluate_email(email_data_parsed, user_first_name, user_last_name, client):
+    if should_mark_as_read:
         print("Email is not worth the time, marking as read")
         # Remove UNREAD label
         try:
