@@ -102,6 +102,8 @@ def parse_email_data(gmail: Resource, message_info: Dict[str, Union[str, List[st
 
 def evaluate_email(email_data: Dict[str, Union[str, List[str]]], user_first_name: str, user_last_name: str, client: OpenAI) -> bool:
     MAX_EMAIL_LEN = 3000
+    user_first_name = user_first_name.strip()
+    user_last_name = user_last_name.strip()
     system_message: Dict[str, str] = {
         "role": "system",
         "content": (
